@@ -13,8 +13,12 @@ import { useParams } from 'next/navigation'
 import { Logo } from '@/components/logo/logo'
 import { NavigationGroup } from '@/components/sidebar/navigation-group'
 import { Button } from '@/components/ui/button'
+import { useSidebarState } from '@/hooks/use-sidebar-state'
+import { cn } from '@/lib/utils'
+import { useCallback } from 'react'
 
 export const Sidebar = () => {
+	const { isCollapsed, toggleCollapsed } = useSidebarState()
 	const params = useParams()
 	// const BASE_PATH = `dashboard/${params.teamId}`
 	const BASE_PATH = '/dashboard'
@@ -67,8 +71,17 @@ export const Sidebar = () => {
 		},
 	]
 
+	const onSidebarCollapse = useCallback(() => {
+		toggleCollapsed(isCollapsed)
+	}, [isCollapsed])
+
 	return (
-		<aside className='w-[300px] border-r border-r-border relative'>
+		<aside
+			className={cn(
+				'w-[300px] border-r border-r-border duration-200 relative',
+				isCollapsed && 'w-[93px]'
+			)}
+		>
 			<div className='p-5 border-b border-b-border h-[80px] flex items-center'>
 				<Logo />
 			</div>
@@ -76,8 +89,14 @@ export const Sidebar = () => {
 			<Button
 				variant='outline'
 				className='absolute top-[17.5px] -right-[22.5px]'
+				onClick={onSidebarCollapse}
 			>
-				<PanelLeftClose className='w-6 h-6' />
+				<PanelLeftClose
+					className={cn(
+						'w-[22px] h-[22px] duration-200',
+						isCollapsed && 'rotate-180'
+					)}
+				/>
 			</Button>
 
 			<div className='p-5'>

@@ -11,9 +11,9 @@ const MainLayout = ({ children }: Props) => {
 	return (
 		<section className='h-full flex'>
 			<Sidebar />
-			<section className='flex-1'>
+			<section className='flex flex-col flex-1'>
 				<Topbar />
-				<main className='h-full p-5'>{children}</main>
+				<main className='flex-1 p-5'>{children}</main>
 			</section>
 		</section>
 	)
