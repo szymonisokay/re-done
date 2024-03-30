@@ -8,20 +8,22 @@ import {
 	PanelLeftClose,
 	UsersIcon,
 } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 
 import { Logo } from '@/components/logo/logo'
 import { NavigationGroup } from '@/components/sidebar/navigation-group'
 import { Button } from '@/components/ui/button'
 import { useSidebarState } from '@/hooks/use-sidebar-state'
 import { cn } from '@/lib/utils'
-import { useCallback } from 'react'
 
 export const Sidebar = () => {
-	const { isCollapsed, toggleCollapsed } = useSidebarState()
 	const params = useParams()
-	// const BASE_PATH = `dashboard/${params.teamId}`
-	const BASE_PATH = '/dashboard'
+	const router = useRouter()
+
+	const { isCollapsed, toggleCollapsed } = useSidebarState()
+
+	const BASE_PATH = `/dashboard/${params.teamId}`
 
 	const navigationGroups = [
 		{
@@ -83,12 +85,23 @@ export const Sidebar = () => {
 			)}
 		>
 			<div className='p-5 border-b border-b-border h-[80px] flex items-center'>
-				<Logo />
+				{!isCollapsed ? (
+					<Logo
+						className='w-[120px] cursor-pointer'
+						onClick={() => router.push(BASE_PATH)}
+					/>
+				) : (
+					<Logo.Collapsed
+						className='w-[35px] cursor-pointer'
+						onClick={() => router.push(BASE_PATH)}
+					/>
+				)}
 			</div>
 
 			<Button
 				variant='outline'
-				className='absolute top-[17.5px] -right-[22.5px]'
+				size='icon'
+				className='absolute top-[17.5px] -right-[22.5px] border-border'
 				onClick={onSidebarCollapse}
 			>
 				<PanelLeftClose

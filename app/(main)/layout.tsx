@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { Sidebar } from '@/components/sidebar/sidebar'
 import { Topbar } from '@/components/topbar/topbar'
+import { AuthProvider } from '@/providers/auth-provider'
 
 type Props = {
 	children: ReactNode
@@ -9,13 +10,15 @@ type Props = {
 
 const MainLayout = ({ children }: Props) => {
 	return (
-		<section className='h-full flex'>
-			<Sidebar />
-			<section className='flex flex-col flex-1'>
-				<Topbar />
-				<main className='flex-1 p-5'>{children}</main>
+		<AuthProvider>
+			<section className='h-full flex'>
+				<Sidebar />
+				<section className='flex flex-col flex-1'>
+					<Topbar />
+					<main className='flex-1 p-5'>{children}</main>
+				</section>
 			</section>
-		</section>
+		</AuthProvider>
 	)
 }
 
