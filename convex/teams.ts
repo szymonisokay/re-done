@@ -88,34 +88,3 @@ export const create = mutation({
 		return teamId
 	},
 })
-
-export const finalize = mutation({
-	args: { teamId: v.id('teams') },
-	handler: async (ctx, { teamId }) => {
-		try {
-			const auth = await ctx.auth.getUserIdentity()
-
-			if (auth === null) {
-				throw new Error('Unauthenticated')
-			}
-
-			const team = await ctx.db.get(teamId)
-
-			if (!team) {
-				throw new Error('Team not found')
-			}
-
-			const owner = await ctx.db.get(team.ownerId)
-
-			if (owner?.externalUserId !== auth.subject) {
-				throw new Error('Unauthorized')
-			}
-
-			await ctx.db.patch(owner._id, { onboardingToken: null })
-
-			return true
-		} catch (error) {
-			console.log(error)
-		}
-	},
-})

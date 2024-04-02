@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignIn } from '@clerk/clerk-react'
+import { useSignIn, useUser } from '@clerk/clerk-react'
 import { OAuthStrategy } from '@clerk/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -30,12 +30,26 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useCreateUser } from '@/hooks/use-create-user'
 
 export const SignInForm = () => {
-	const { signIn, isLoaded } = useSignIn()
+	const { signIn, isLoaded, setActive } = useSignIn()
+	const { user } = useUser()
+	const { createUser } = useCreateUser()
 	const router = useRouter()
 
 	const [showPassword, setShowPassword] = useState<boolean>(false)
+
+	useEffect(() => {
+		const createUserIfNotExists = async () => {
+			if (!user) return
+
+			await createUser(user)
+			router.push('/dashboard')
+		}
+
+		createUserIfNotExists()
+	}, [user])
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
@@ -52,20 +66,17 @@ export const SignInForm = () => {
 				return
 			}
 
-			toast.promise(
-				signIn.create({
-					identifier: email,
-					password,
-				}),
-				{
-					loading: 'Signing in...',
-					success: () => {
-						router.push('/dashboard')
-						return 'Signed in successfully'
-					},
-					error: 'Could not sign in',
-				}
-			)
+			const loggedIn = await signIn.create({
+				identifier: email,
+				password,
+			})
+
+			if (loggedIn.status !== 'complete') {
+				toast.error('Could not sign in')
+			}
+
+			await setActive({ session: loggedIn.createdSessionId })
+			setTimeout(() => router.push('/dashboard'), 500)
 		} catch (error: any) {
 			toast.error(error.errors[0].code)
 		}
@@ -75,8 +86,8 @@ export const SignInForm = () => {
 		try {
 			await signIn?.authenticateWithRedirect({
 				strategy,
-				redirectUrl: '/dashboard',
-				redirectUrlComplete: '/dashboard',
+				redirectUrl: '/sign-in',
+				redirectUrlComplete: '/sign-in',
 			})
 		} catch (error: any) {
 			toast.error(error.errors[0].code)

@@ -23,7 +23,6 @@ export const CreateTeamForm = ({ user, token }: Props) => {
 	const pathname = usePathname()
 	const teamId = useSearchParams().get('teamId')
 	const create = useMutation(api.teams.create)
-	const finalize = useMutation(api.teams.finalize)
 	const team = useQuery(api.teams.get, {
 		teamId: teamId as Id<'teams'> | null,
 	})
@@ -48,8 +47,6 @@ export const CreateTeamForm = ({ user, token }: Props) => {
 
 	const onCreateTeamFinish = async (teamId: string) => {
 		window.location.replace(`/dashboard/${teamId}`)
-
-		await finalize({ teamId: teamId as Id<'teams'> })
 	}
 
 	if (team === undefined) {

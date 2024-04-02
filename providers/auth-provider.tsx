@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	if (!isAuthenticated) {
-		redirect('/')
+		return redirect('/')
 	}
 
 	return <Fragment>{children}</Fragment>

@@ -8,7 +8,6 @@ export default defineSchema({
 		fullName: v.union(v.string(), v.null()),
 		email: v.string(),
 		imageUrl: v.optional(v.string()),
-		onboardingToken: v.union(v.string(), v.null()),
 		teams: v.array(v.id('teams')),
 	}),
 	teams: defineTable({

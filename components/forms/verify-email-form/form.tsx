@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignUp } from '@clerk/clerk-react'
+import { useSignUp, useUser } from '@clerk/clerk-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowRightIcon, RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -27,9 +27,13 @@ import {
 	InputOTPSeparator,
 	InputOTPSlot,
 } from '@/components/ui/input-otp'
+import { useCreateUser } from '@/hooks/use-create-user'
+import { useEffect } from 'react'
 
 export const VerifyEmailForm = () => {
 	const { signUp, setActive, isLoaded } = useSignUp()
+	const { user } = useUser()
+	const { createUser } = useCreateUser()
 	const router = useRouter()
 
 	const form = useForm<FormValues>({
@@ -39,38 +43,33 @@ export const VerifyEmailForm = () => {
 		},
 	})
 
+	useEffect(() => {
+		const createUserIfNotExists = async () => {
+			if (!user) return
+
+			await createUser(user)
+			toast.success('Email verified. Redirecting to dashboard...')
+			router.push('/dashboard')
+		}
+
+		createUserIfNotExists()
+	}, [user])
+
 	const onSubmit = async ({ code }: FormValues) => {
 		try {
 			if (!isLoaded) {
 				return
 			}
 
-			toast.promise(signUp.attemptEmailAddressVerification({ code }), {
-				loading: 'Verifying email...',
-				success: (verified) => {
-					if (verified.status !== 'complete') {
-						return 'Could not verify email. Please try again.'
-					}
-
-					toast.promise(
-						setActive({ session: verified.createdSessionId }),
-						{
-							success: () => {
-								setTimeout(
-									() => router.push('/dashboard'),
-									1000
-								)
-
-								return 'Email verified successfully. Redirecting to dashboard...'
-							},
-						}
-					)
-
-					return 'Email verified successfully'
-				},
-				error: 'Could not verify email. Please try again.',
+			const verified = await signUp.attemptEmailAddressVerification({
+				code,
 			})
 
+			if (verified.status !== 'complete') {
+				toast.error('Could not verify email. Please try again.')
+			}
+
+			await setActive({ session: verified.createdSessionId })
 			form.reset()
 		} catch (error: any) {
 			toast.error(error.errors[0].code)

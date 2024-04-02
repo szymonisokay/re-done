@@ -2,29 +2,21 @@
 
 import { useQuery } from 'convex/react'
 import { redirect } from 'next/navigation'
-import qs from 'query-string'
 
-import { Spinner } from '@/components/spinner'
+import Loading from '@/app/loading'
 import { api } from '@/convex/_generated/api'
-import { useConvexUser } from '@/hooks/use-convex-user'
+import { useGetUser } from '@/hooks/use-get-user'
 
 const DashboardPage = () => {
+	const { isLoading } = useGetUser()
 	const teamId = useQuery(api.teams.getLatestTeam)
-	const { isLoading, user } = useConvexUser()
 
 	if (isLoading || teamId === undefined) {
-		return <Spinner fullPage />
+		return <Loading />
 	}
 
 	if (teamId === null) {
-		const url = qs.stringifyUrl(
-			{
-				url: '/onboarding',
-				query: { token: user?.onboardingToken },
-			},
-			{ skipNull: true }
-		)
-		return redirect(url)
+		return redirect('/create')
 	}
 
 	return redirect(`/dashboard/${teamId}`)
