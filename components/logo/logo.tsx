@@ -42,7 +42,7 @@ export const Logo = ({ className, ...props }: Props) => {
 const LogoCollapsed = ({ className, ...props }: Props) => {
 	return (
 		<svg
-			viewBox='0 0 61 40'
+			viewBox='0 0 57 36'
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
 			className={className}

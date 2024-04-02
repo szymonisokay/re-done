@@ -29,6 +29,31 @@ export const get = query({
 	},
 })
 
+export const getLatestTeam = query({
+	handler: async (ctx) => {
+		try {
+			const auth = await ctx.auth.getUserIdentity()
+
+			if (auth === null) {
+				throw new Error('Unauthenticated')
+			}
+
+			const user = await ctx.db
+				.query('users')
+				.filter((q) => q.eq(q.field('externalUserId'), auth.subject))
+				.first()
+
+			if (!user) {
+				throw new Error('User not found')
+			}
+
+			return user.teams[0]
+		} catch (error) {
+			console.log(error)
+		}
+	},
+})
+
 export const create = mutation({
 	args: { name: v.string() },
 	handler: async (ctx, args) => {

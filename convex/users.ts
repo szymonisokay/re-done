@@ -1,7 +1,6 @@
 import { v } from 'convex/values'
 
 import { mutation, query } from '@/convex/_generated/server'
-import { createUrl } from '@/utils/create-url'
 import { generateOnboardingToken } from '@/utils/tokens'
 
 export const get = query({
@@ -28,7 +27,8 @@ export const get = query({
 export const create = mutation({
 	args: {
 		externalUserId: v.string(),
-		name: v.string(),
+		name: v.union(v.string(), v.null()),
+		fullName: v.union(v.string(), v.null()),
 		email: v.string(),
 		imageUrl: v.optional(v.string()),
 	},
@@ -38,25 +38,19 @@ export const create = mutation({
 			.filter((q) => q.eq(q.field('externalUserId'), args.externalUserId))
 			.first()
 
-		if (!!user && user.onboardingToken)
-			return {
-				redirectUrl: createUrl('/onboarding', {
-					token: user.onboardingToken,
-				}),
-			}
-
-		if (!!user && !user.onboardingToken)
-			return { redirectUrl: createUrl('/dashboard') }
+		if (!!user) {
+			return { userId: user._id, token: user.onboardingToken }
+		}
 
 		const token = generateOnboardingToken()
 
-		await ctx.db.insert('users', {
+		const userId = await ctx.db.insert('users', {
 			...args,
 			onboardingToken: token,
 			teams: [],
 		})
 
-		return { redirectUrl: createUrl('/onboarding', { token }) }
+		return { userId, token }
 	},
 })
 

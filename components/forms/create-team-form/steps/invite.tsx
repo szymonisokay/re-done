@@ -42,7 +42,7 @@ export const StepInvite = ({ team, onSubmit }: Props) => {
 				</Button>
 			</div>
 			<Button
-				variant='styleless'
+				variant='unstyled'
 				onClick={onCopyInviteCode}
 				className='flex items-center w-fit p-1 px-2 ml-auto mt-2 rounded-sm cursor-pointer transition duration-200 hover:bg-primary'
 			>

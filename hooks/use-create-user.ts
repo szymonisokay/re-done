@@ -3,32 +3,42 @@ import { useMutation } from 'convex/react'
 import { useEffect, useState } from 'react'
 
 import { api } from '@/convex/_generated/api'
+import { useConvexUser } from '@/hooks/use-convex-user'
 
 export const useCreateUser = () => {
 	const { user, isLoaded } = useUser()
-	const createUser = useMutation(api.users.create)
+	const create = useMutation(api.users.create)
+	const { user: convexUser } = useConvexUser()
 
-	const [url, setUrl] = useState<string | null>(null)
+	const [token, setToken] = useState<string | null>(null)
 
 	useEffect(() => {
 		const fetchUser = async () => {
 			if (isLoaded && user) {
-				const { redirectUrl } = await createUser({
+				console.log(user, 'here')
+				const { token } = await create({
 					externalUserId: user.id,
-					name: `${user.firstName} ${user.lastName}`,
+					name: user.firstName,
+					fullName:
+						!user.firstName && !user.lastName
+							? null
+							: `${user.firstName ?? ''} ${
+									user.lastName ?? ''
+							  }`.trim(),
 					email: user.emailAddresses[0].emailAddress,
 					imageUrl: user.imageUrl,
 				})
 
-				setUrl(redirectUrl)
+				setToken(token)
 			}
 		}
 
 		fetchUser()
-	}, [user, isLoaded])
+	}, [isLoaded, user])
 
 	return {
 		isLoading: !isLoaded,
-		url,
+		token,
+		user: convexUser,
 	}
 }

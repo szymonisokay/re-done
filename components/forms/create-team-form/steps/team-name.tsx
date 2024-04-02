@@ -27,7 +27,7 @@ export const StepTeamName = ({ user, onSubmit }: Props) => {
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: user.name ? `${user.name.split(' ')[0]}'s Team` : 'Your Team',
+			name: user.name ? `${user.name}'s Team` : 'Your Team',
 		},
 	})
 
