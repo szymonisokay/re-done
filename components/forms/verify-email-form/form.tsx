@@ -1,10 +1,9 @@
 'use client'
 
-import { useSignUp, useUser } from '@clerk/clerk-react'
+import { useSignUp } from '@clerk/clerk-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowRightIcon, RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -27,14 +26,9 @@ import {
 	InputOTPSeparator,
 	InputOTPSlot,
 } from '@/components/ui/input-otp'
-import { useCreateUser } from '@/hooks/use-create-user'
-import { useEffect } from 'react'
 
 export const VerifyEmailForm = () => {
 	const { signUp, setActive, isLoaded } = useSignUp()
-	const { user } = useUser()
-	const { createUser } = useCreateUser()
-	const router = useRouter()
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
@@ -42,18 +36,6 @@ export const VerifyEmailForm = () => {
 			code: '',
 		},
 	})
-
-	useEffect(() => {
-		const createUserIfNotExists = async () => {
-			if (!user) return
-
-			await createUser(user)
-			toast.success('Email verified. Redirecting to dashboard...')
-			router.push('/dashboard')
-		}
-
-		createUserIfNotExists()
-	}, [user])
 
 	const onSubmit = async ({ code }: FormValues) => {
 		try {

@@ -1,65 +1,69 @@
-'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { UsersIcon } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { v4 as uuid } from 'uuid'
 
-import { useMutation, useQuery } from 'convex/react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import qs from 'query-string'
-import { toast } from 'sonner'
-
-import { Spinner } from '@/components/spinner'
-import { api } from '@/convex/_generated/api'
-import { Doc, Id } from '@/convex/_generated/dataModel'
-
-import { FormValues } from './schema'
-import { StepInvite } from './steps/invite'
-import { StepTeamName } from './steps/team-name'
+import {
+	FormValues,
+	formSchema,
+} from '@/components/forms/create-team-form/schema'
+import { Heading } from '@/components/heading'
+import { Button } from '@/components/ui/button'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Doc } from '@/convex/_generated/dataModel'
 
 type Props = {
 	user: Doc<'users'>
-	token?: string
+	onSubmit: (values: FormValues) => void
 }
 
-export const CreateTeamForm = ({ user, token }: Props) => {
-	const router = useRouter()
-	const pathname = usePathname()
-	const teamId = useSearchParams().get('teamId')
-	const create = useMutation(api.teams.create)
-	const team = useQuery(api.teams.get, {
-		teamId: teamId as Id<'teams'> | null,
+export const CreateTeamForm = ({ user, onSubmit }: Props) => {
+	const form = useForm<FormValues>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: user.name ? `${user.name}'s Team` : 'Your Team',
+			inviteCode: uuid(),
+		},
 	})
 
-	const onCreateTeam = async (values: FormValues) => {
-		toast.promise(create(values), {
-			loading: 'Creating team',
-			success: (teamId) => {
-				const url = qs.stringifyUrl(
-					{
-						url: pathname,
-						query: { token, teamId },
-					},
-					{ skipEmptyString: true, skipNull: true, sort: false }
-				)
-
-				router.push(url)
-				return 'Team created'
-			},
-		})
-	}
-
-	const onCreateTeamFinish = async (teamId: string) => {
-		window.location.replace(`/dashboard/${teamId}`)
-	}
-
-	if (team === undefined) {
-		return <Spinner fullPage />
-	}
-
 	return (
-		<>
-			{team ? (
-				<StepInvite team={team} onSubmit={onCreateTeamFinish} />
-			) : (
-				<StepTeamName user={user} onSubmit={onCreateTeam} />
-			)}
-		</>
+		<Form {...form}>
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className='flex flex-col'
+			>
+				<Heading
+					title="Choose your team's name"
+					subtitle='You can always change the name later.'
+					icon={UsersIcon}
+					className='mb-10 text-center'
+					classNameTitle='text-4xl'
+				/>
+
+				<FormField
+					control={form.control}
+					name='name'
+					render={({ field }) => (
+						<FormItem className='space-y-1'>
+							<FormLabel>Team name</FormLabel>
+							<FormControl>
+								<Input {...field} />
+							</FormControl>
+						</FormItem>
+					)}
+				/>
+
+				<Button variant='accent' className='mt-5'>
+					Create team
+				</Button>
+			</form>
+		</Form>
 	)
 }

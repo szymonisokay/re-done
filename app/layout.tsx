@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import ConvexClientProvider from '@/providers/convex-provider'
 
 import { Toaster } from '@/components/ui/sonner'
+import { ClientProvider } from '@/providers/client-provider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -22,10 +23,12 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={cn('dark', inter.className)}>
-				<ConvexClientProvider>
-					<Toaster />
-					{children}
-				</ConvexClientProvider>
+				<ClientProvider>
+					<ConvexClientProvider>
+						<Toaster />
+						{children}
+					</ConvexClientProvider>
+				</ClientProvider>
 			</body>
 		</html>
 	)

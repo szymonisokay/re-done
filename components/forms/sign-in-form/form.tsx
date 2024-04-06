@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignIn, useUser } from '@clerk/clerk-react'
+import { useSignIn } from '@clerk/clerk-react'
 import { OAuthStrategy } from '@clerk/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -11,8 +11,8 @@ import {
 	MailIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -30,26 +30,14 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useCreateUser } from '@/hooks/use-create-user'
+import { createUrl } from '@/utils/create-url'
 
 export const SignInForm = () => {
 	const { signIn, isLoaded, setActive } = useSignIn()
-	const { user } = useUser()
-	const { createUser } = useCreateUser()
 	const router = useRouter()
+	const redirectUrl = useSearchParams().get('redirectUrl')
 
 	const [showPassword, setShowPassword] = useState<boolean>(false)
-
-	useEffect(() => {
-		const createUserIfNotExists = async () => {
-			if (!user) return
-
-			await createUser(user)
-			router.push('/dashboard')
-		}
-
-		createUserIfNotExists()
-	}, [user])
 
 	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
@@ -83,11 +71,15 @@ export const SignInForm = () => {
 	}
 
 	const onProviderLogin = async (strategy: OAuthStrategy) => {
+		const url = createUrl('/sign-in', {
+			redirectUrl,
+		})
+
 		try {
 			await signIn?.authenticateWithRedirect({
 				strategy,
-				redirectUrl: '/sign-in',
-				redirectUrlComplete: '/sign-in',
+				redirectUrl: url,
+				redirectUrlComplete: url,
 			})
 		} catch (error: any) {
 			toast.error(error.errors[0].code)

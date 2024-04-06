@@ -13,13 +13,13 @@ type Props = {
 	onSubmit: (id: string) => void
 }
 
-export const StepInvite = ({ team, onSubmit }: Props) => {
+export const InviteMemberForm = ({ team, onSubmit }: Props) => {
 	const origin = useOrigin()
 
-	const { _id } = team
+	const { _id, inviteCode } = team
 
 	const onCopyInviteCode = async () => {
-		await navigator.clipboard.writeText(`${origin}/invite/${_id}`)
+		await navigator.clipboard.writeText(`${origin}/invite/${inviteCode}`)
 
 		toast.success('Invite code copied.')
 	}

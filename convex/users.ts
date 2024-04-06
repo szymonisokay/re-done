@@ -1,25 +1,25 @@
 import { v } from 'convex/values'
 
 import { mutation, query } from '@/convex/_generated/server'
+import { CustomConvexError } from '@/utils/error'
 
 export const get = query({
 	handler: async (ctx) => {
-		try {
-			const auth = await ctx.auth.getUserIdentity()
+		const auth = await ctx.auth.getUserIdentity()
 
-			if (auth === null) {
-				throw new Error('Unautenticated')
-			}
-
-			const user = await ctx.db
-				.query('users')
-				.filter((q) => q.eq(q.field('externalUserId'), auth.subject))
-				.first()
-
-			return user
-		} catch (error) {
-			console.log(error)
+		if (auth === null) {
+			throw new CustomConvexError({
+				code: 'unathenticated',
+				message: 'Unauthenticated',
+			})
 		}
+
+		const user = await ctx.db
+			.query('users')
+			.filter((q) => q.eq(q.field('externalUserId'), auth.subject))
+			.first()
+
+		return user
 	},
 })
 
@@ -32,26 +32,20 @@ export const create = mutation({
 		imageUrl: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
-		try {
-			const user = await ctx.db
-				.query('users')
-				.filter((q) =>
-					q.eq(q.field('externalUserId'), args.externalUserId)
-				)
-				.first()
+		const user = await ctx.db
+			.query('users')
+			.filter((q) => q.eq(q.field('externalUserId'), args.externalUserId))
+			.first()
 
-			if (!!user) {
-				return user._id
-			}
-
-			const userId = await ctx.db.insert('users', {
-				...args,
-				teams: [],
-			})
-
-			return userId
-		} catch (error) {
-			console.log(error)
+		if (!!user) {
+			return user._id
 		}
+
+		const userId = await ctx.db.insert('users', {
+			...args,
+			teams: [],
+		})
+
+		return userId
 	},
 })

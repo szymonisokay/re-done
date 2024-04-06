@@ -23,5 +23,6 @@ export default defineSchema({
 				),
 			})
 		),
+		inviteCode: v.string(),
 	}),
 })

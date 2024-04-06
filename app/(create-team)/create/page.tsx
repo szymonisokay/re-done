@@ -2,14 +2,14 @@
 
 import { redirect } from 'next/navigation'
 
-import { CreateTeamForm } from '@/components/forms/create-team-form/create-team-form'
+import { CreateTeamFormWrapper } from '@/components/forms/create-team-form/wrapper'
 import { Spinner } from '@/components/spinner'
 import { useGetUser } from '@/hooks/use-get-user'
 
 const CreateTeamPage = () => {
-	const { isLoading, user } = useGetUser()
+	const { user } = useGetUser()
 
-	if (isLoading || user === undefined) {
+	if (user === undefined) {
 		return <Spinner fullPage />
 	}
 
@@ -17,7 +17,7 @@ const CreateTeamPage = () => {
 		return redirect('/')
 	}
 
-	return <CreateTeamForm user={user} />
+	return <CreateTeamFormWrapper user={user} />
 }
 
 export default CreateTeamPage

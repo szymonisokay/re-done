@@ -1,32 +1,18 @@
-import { useSignIn, useSignUp, useUser } from '@clerk/clerk-react'
+import { useSignIn, useSignUp } from '@clerk/clerk-react'
 import { OAuthStrategy } from '@clerk/types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { FormValues } from '@/components/forms/sign-up-form/schema'
-import { useCreateUser } from '@/hooks/use-create-user'
 import { useRouter } from 'next/navigation'
 import { SignUpForm } from './form'
 
 export const SignUpFormWrapper = () => {
 	const { signUp, isLoaded } = useSignUp()
 	const { signIn } = useSignIn()
-	const { user } = useUser()
-	const { createUser } = useCreateUser()
 	const router = useRouter()
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-
-	useEffect(() => {
-		const createUserIfNotExists = async () => {
-			if (!user) return
-
-			await createUser(user)
-			router.push('/dashboard')
-		}
-
-		createUserIfNotExists()
-	}, [user])
 
 	const onSubmit = async ({
 		firstName,
