@@ -1,5 +1,7 @@
 import { v } from 'convex/values'
 
+import { internal } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
 import { mutation, query } from '@/convex/_generated/server'
 import { CustomConvexError } from '@/utils/error'
 
@@ -97,6 +99,61 @@ export const create = mutation({
 		await ctx.db.patch(user._id, { teams: [...user.teams, teamId] })
 
 		return teamId
+	},
+})
+
+export const invite = mutation({
+	args: { id: v.string(), email: v.string() },
+	handler: async (ctx, { id, email }) => {
+		const auth = await ctx.auth.getUserIdentity()
+
+		if (auth === null) {
+			throw new CustomConvexError({
+				code: 'unathenticated',
+				message: 'Unauthenticated',
+			})
+		}
+
+		if (!email) {
+			throw new CustomConvexError({
+				code: 'invalidEmail',
+				message: 'Please enter a valid email address',
+			})
+		}
+
+		const teamId = ctx.db.normalizeId('teams', id)
+		const team = await ctx.db.get(teamId as Id<'teams'>)
+
+		if (!team) {
+			throw new CustomConvexError({
+				code: 'teamNotFound',
+				message: 'Team not found',
+			})
+		}
+
+		const user = await ctx.db
+			.query('users')
+			.filter((q) => q.eq(q.field('externalUserId'), auth.subject))
+			.first()
+
+		if (!user) {
+			throw new CustomConvexError({
+				code: 'userNotFound',
+				message: 'User not found',
+			})
+		}
+
+		await ctx.scheduler.runAfter(0, internal.resend.sendInviteEmail, {
+			userEmail: email,
+			invitedBy: {
+				name: user.name ?? '',
+				email: user.email,
+			},
+			teamName: team.name,
+			inviteLink: `${process.env.BASE_URL}/invite/${team.inviteCode}`,
+		})
+
+		return true
 	},
 })
 

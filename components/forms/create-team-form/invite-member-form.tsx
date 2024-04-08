@@ -5,8 +5,11 @@ import { Heading } from '@/components/heading'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { api } from '@/convex/_generated/api'
 import { Doc } from '@/convex/_generated/dataModel'
 import { useOrigin } from '@/hooks/use-origin'
+import { useMutation } from 'convex/react'
+import { useState } from 'react'
 
 type Props = {
 	team: Doc<'teams'>
@@ -15,6 +18,8 @@ type Props = {
 
 export const InviteMemberForm = ({ team, onSubmit }: Props) => {
 	const origin = useOrigin()
+	const invite = useMutation(api.teams.invite)
+	const [email, setEmail] = useState<string>('')
 
 	const { _id, inviteCode } = team
 
@@ -22,6 +27,17 @@ export const InviteMemberForm = ({ team, onSubmit }: Props) => {
 		await navigator.clipboard.writeText(`${origin}/invite/${inviteCode}`)
 
 		toast.success('Invite code copied.')
+	}
+
+	const onInvite = () => {
+		toast.promise(invite({ id: team._id, email }), {
+			loading: 'Sending invite',
+			success: () => {
+				setEmail('')
+				return `Invite sent to: <b>${email}</b>`
+			},
+			error: 'Could not send invite',
+		})
 	}
 
 	return (
@@ -36,8 +52,17 @@ export const InviteMemberForm = ({ team, onSubmit }: Props) => {
 
 			<Label htmlFor='email'>Email address</Label>
 			<div className='flex items-center gap-2 mt-2'>
-				<Input id='email' type='email' />
-				<Button variant='outline' className='w-24 h-10'>
+				<Input
+					id='email'
+					type='email'
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+				/>
+				<Button
+					variant='outline'
+					className='w-24 h-10'
+					onClick={onInvite}
+				>
 					Invite
 				</Button>
 			</div>

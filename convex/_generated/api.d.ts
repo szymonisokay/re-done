@@ -14,7 +14,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as resend from "../resend.js";
 import type * as teams from "../teams.js";
+import type * as templates_invite from "../templates/invite.js";
 import type * as users from "../users.js";
 
 /**
@@ -26,7 +28,9 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  resend: typeof resend;
   teams: typeof teams;
+  "templates/invite": typeof templates_invite;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
