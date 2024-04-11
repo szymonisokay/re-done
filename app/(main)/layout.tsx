@@ -19,7 +19,7 @@ const MainLayout = ({ children }: Props) => {
 					<Sidebar />
 					<section className='flex flex-col flex-1'>
 						<Topbar />
-						<main className='flex-1 p-5'>{children}</main>
+						<main className='flex-1'>{children}</main>
 					</section>
 				</section>
 			</UserProvider>

@@ -1,17 +1,22 @@
 'use client'
 
-import { Spinner } from '@/components/spinner'
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
 import { UserButton } from '@clerk/clerk-react'
 import { useQuery } from 'convex/react'
 import { redirect } from 'next/navigation'
+
+import { Breadcrumb } from '@/components/breadcrumbs/types'
+import { PageHeader } from '@/components/page-header/page-header'
+import { Spinner } from '@/components/spinner'
+import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
 
 type Params = {
 	params: {
 		teamId: string
 	}
 }
+
+const breadcrumbs: Breadcrumb[] = [{ name: 'Dashboard', href: '/dashboard' }]
 
 const DashboardTeamPage = ({ params }: Params) => {
 	const team = useQuery(api.teams.get, {
@@ -27,10 +32,13 @@ const DashboardTeamPage = ({ params }: Params) => {
 	}
 
 	return (
-		<div className='h-full'>
-			<p>{team.name}</p>
-			<UserButton afterSignOutUrl='/' />
-		</div>
+		<>
+			<PageHeader pageTitle='Dashboard' breadcrumbs={breadcrumbs} />
+			<div>
+				<p>{team.name}</p>
+				<UserButton afterSignOutUrl='/' />
+			</div>
+		</>
 	)
 }
 
