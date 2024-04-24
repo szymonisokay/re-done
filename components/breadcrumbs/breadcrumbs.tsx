@@ -11,22 +11,20 @@ type Props = {
 }
 
 export const Breadcrumbs = ({ breadcrumbs }: Props) => {
-	console.log(breadcrumbs)
 	return (
-		<div className='p-5'>
-			<Breadcrumb.Separator className='mr-2' />
+		<div className='p-5 flex items-center min-h-[64px]'>
 			{breadcrumbs.map((breadcrumb, index) => {
-				console.log(index !== breadcrumbs.length - 1)
 				return (
 					<Fragment key={index}>
-						<Breadcrumb breadcrumb={breadcrumb} />
+						{breadcrumb.isLoading ? (
+							<Breadcrumb.Skeleton />
+						) : (
+							<Breadcrumb breadcrumb={breadcrumb} />
+						)}
 
-						<Breadcrumb.Separator
-							className={cn(
-								'mx-2',
-								!breadcrumb.href && 'text-foreground'
-							)}
-						/>
+						{index < breadcrumbs.length - 1 && (
+							<Breadcrumb.Separator className={cn('mx-2')} />
+						)}
 					</Fragment>
 				)
 			})}

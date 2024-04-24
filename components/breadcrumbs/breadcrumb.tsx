@@ -3,22 +3,20 @@ import { ComponentProps } from 'react'
 
 import { BreadcrumbSeparator } from '@/components/breadcrumbs/breadcrumb-separator'
 import { Breadcrumb as BreadcrumbType } from '@/components/breadcrumbs/types'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useCreateUrl } from '@/hooks/use-create-url'
 import { cn } from '@/lib/utils'
-import { useParams } from 'next/navigation'
 
 type Props = ComponentProps<'span'> & {
 	breadcrumb: BreadcrumbType
 }
 
 export const Breadcrumb = ({ breadcrumb, className, ...props }: Props) => {
-	const params = useParams()
-	const teamId = params.teamId as string
-
-	const href = breadcrumb.href?.replace(':teamId', teamId)
+	const { url: href } = useCreateUrl(breadcrumb.href)
 
 	return (
 		<>
-			{href ? (
+			{breadcrumb.href ? (
 				<Link href={href}>
 					<span
 						{...props}
@@ -43,3 +41,9 @@ export const Breadcrumb = ({ breadcrumb, className, ...props }: Props) => {
 }
 
 Breadcrumb.Separator = BreadcrumbSeparator
+
+const BreadcrumbSkeleton = () => {
+	return <Skeleton className='w-32 h-4 inline-block' />
+}
+
+Breadcrumb.Skeleton = BreadcrumbSkeleton

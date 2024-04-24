@@ -1,4 +1,5 @@
 export type Breadcrumb = {
-	name: string
+	name?: string
 	href?: string
+	isLoading?: boolean
 }

@@ -1,14 +1,15 @@
 import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
-import { ComponentProps } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
-type Props = ComponentProps<'div'> & {
-	title: string
+type Props = Omit<ComponentProps<'div'>, 'title'> & {
+	title: string | ReactNode
 	subtitle?: string
 	truncate?: boolean
 	icon?: LucideIcon
 	classNameIcon?: string
 	classNameTitle?: string
+	classNameSubtitle?: string
 }
 
 export const Heading = ({
@@ -19,6 +20,7 @@ export const Heading = ({
 	className,
 	classNameIcon,
 	classNameTitle,
+	classNameSubtitle,
 	...rest
 }: Props) => {
 	return (
@@ -45,7 +47,8 @@ export const Heading = ({
 				<p
 					className={cn(
 						'text-[14px] text-secondary text-balance',
-						truncate && 'truncate'
+						truncate && 'truncate',
+						classNameSubtitle
 					)}
 				>
 					{subtitle}

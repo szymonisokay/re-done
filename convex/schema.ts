@@ -24,5 +24,17 @@ export default defineSchema({
 			})
 		),
 		inviteCode: v.string(),
+		projects: v.array(v.id('projects')),
+	}),
+	projects: defineTable({
+		name: v.string(),
+		symbol: v.string(),
+		description: v.optional(v.string()),
+		startDate: v.string(),
+		endDate: v.optional(v.string()),
+		isPrivate: v.boolean(),
+		isDeleted: v.boolean(),
+		teamId: v.id('teams'),
+		members: v.array(v.id('users')),
 	}),
 })

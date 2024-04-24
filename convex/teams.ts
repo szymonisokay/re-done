@@ -94,6 +94,7 @@ export const create = mutation({
 					userId: user._id,
 				},
 			],
+			projects: [],
 		})
 
 		await ctx.db.patch(user._id, { teams: [...user.teams, teamId] })

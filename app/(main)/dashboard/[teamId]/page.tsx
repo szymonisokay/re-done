@@ -16,16 +16,12 @@ type Params = {
 	}
 }
 
-const breadcrumbs: Breadcrumb[] = [{ name: 'Dashboard', href: '/dashboard' }]
+const breadcrumbs: Breadcrumb[] = [{ name: 'Dashboard' }]
 
 const DashboardTeamPage = ({ params }: Params) => {
 	const team = useQuery(api.teams.get, {
 		teamId: params.teamId as Id<'teams'>,
 	})
-
-	if (team === undefined) {
-		return <Spinner fullPage />
-	}
 
 	if (team === null) {
 		return redirect('/')
@@ -35,8 +31,14 @@ const DashboardTeamPage = ({ params }: Params) => {
 		<>
 			<PageHeader pageTitle='Dashboard' breadcrumbs={breadcrumbs} />
 			<div>
-				<p>{team.name}</p>
-				<UserButton afterSignOutUrl='/' />
+				{team === undefined ? (
+					<Spinner className='pt-5' />
+				) : (
+					<>
+						<p>{team?.name}</p>
+						<UserButton afterSignOutUrl='/' />
+					</>
+				)}
 			</div>
 		</>
 	)
