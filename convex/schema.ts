@@ -9,6 +9,17 @@ export default defineSchema({
 		email: v.string(),
 		imageUrl: v.optional(v.string()),
 		teams: v.array(v.id('teams')),
+		configurationId: v.union(v.id('userConfiguration'), v.null()),
+	}),
+	userConfiguration: defineTable({
+		userId: v.id('users'),
+		currentTeamId: v.union(v.id('teams'), v.null()),
+		theme: v.union(
+			v.literal('dark'),
+			v.literal('light'),
+			v.literal('system')
+		),
+		language: v.union(v.string(), v.null()),
 	}),
 	teams: defineTable({
 		name: v.string(),

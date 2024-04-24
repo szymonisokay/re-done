@@ -3,8 +3,8 @@ import { CreateProjectForm } from '@/components/forms/create-project-form/form'
 import { PageHeader } from '@/components/page-header/page-header'
 
 const breadcrumbs: Breadcrumb[] = [
-	{ name: 'Dashboard', href: '/dashboard/:teamId' },
-	{ name: 'Projects', href: '/dashboard/:teamId/projects' },
+	{ name: 'Dashboard', href: '/dashboard' },
+	{ name: 'Projects', href: '/dashboard/projects' },
 	{ name: 'Add new project' },
 ]
 

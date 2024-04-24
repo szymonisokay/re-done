@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 
 const ProjectPage = () => {
 	const { url } = useCreateUrl(
-		`/dashboard/:teamId/projects/:projectId/${ProjectTabs.tasks}`
+		`/dashboard/projects/:projectId/${ProjectTabs.tasks}`
 	)
 
 	return redirect(url)

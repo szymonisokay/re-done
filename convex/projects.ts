@@ -4,8 +4,8 @@ import { CustomConvexError } from '@/utils/error'
 import { mutation, query } from './_generated/server'
 
 export const get = query({
-	args: { projectId: v.id('projects') },
-	handler: async (ctx, { projectId }) => {
+	args: { projectSymbol: v.string() },
+	handler: async (ctx, { projectSymbol }) => {
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
@@ -29,7 +29,10 @@ export const get = query({
 		}
 
 		// check if project exists
-		const project = await ctx.db.get(projectId)
+		const project = await ctx.db
+			.query('projects')
+			.filter((q) => q.eq(q.field('symbol'), projectSymbol))
+			.first()
 
 		if (!project) {
 			throw new CustomConvexError({

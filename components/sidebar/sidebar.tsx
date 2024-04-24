@@ -8,7 +8,7 @@ import {
 	PanelLeftClose,
 	UsersIcon,
 } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 
 import { Logo } from '@/components/logo/logo'
@@ -18,12 +18,11 @@ import { useSidebarState } from '@/hooks/use-sidebar-state'
 import { cn } from '@/lib/utils'
 
 export const Sidebar = () => {
-	const params = useParams()
 	const router = useRouter()
 
 	const { isCollapsed, toggleCollapsed } = useSidebarState()
 
-	const BASE_PATH = `/dashboard/${params.teamId}`
+	const BASE_PATH = `/dashboard`
 
 	const navigationGroups = [
 		{

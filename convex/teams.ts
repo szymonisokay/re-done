@@ -98,6 +98,9 @@ export const create = mutation({
 		})
 
 		await ctx.db.patch(user._id, { teams: [...user.teams, teamId] })
+		await ctx.db.patch(user.configurationId as Id<'userConfiguration'>, {
+			currentTeamId: teamId,
+		})
 
 		return teamId
 	},

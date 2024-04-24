@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation } from 'convex/react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { ComponentProps } from 'react'
 import { toast } from 'sonner'
 
@@ -19,24 +19,26 @@ import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
 import { useCustomForm } from '@/hooks/use-custom-form'
+import { useTeam } from '@/hooks/use-team'
 
 type Props = ComponentProps<'form'>
 
 export const CreateProjectForm = ({ ...props }: Props) => {
-	const create = useMutation(api.projects.create)
-	const teamId = useParams().teamId
 	const router = useRouter()
+	const { team } = useTeam()
+	const create = useMutation(api.projects.create)
 	const form = useCustomForm<FormValues>(formSchema, {
 		defaultValues,
 	})
 
 	const onSubmit = (values: FormValues) => {
-		toast.promise(create({ ...values, teamId: teamId as Id<'teams'> }), {
+		if (!team) return
+
+		toast.promise(create({ ...values, teamId: team._id }), {
 			loading: 'Creating project...',
-			success: (projectId) => {
-				const url = `/dashboard/${teamId}/projects/${projectId}`
+			success: () => {
+				const url = `/dashboard/projects/${values.symbol}`
 				router.push(url)
 
 				return 'Project created successfully'

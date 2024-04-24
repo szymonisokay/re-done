@@ -2,6 +2,7 @@ import { v } from 'convex/values'
 
 import { mutation, query } from '@/convex/_generated/server'
 import { CustomConvexError } from '@/utils/error'
+import { internal } from './_generated/api'
 
 export const get = query({
 	handler: async (ctx) => {
@@ -44,6 +45,11 @@ export const create = mutation({
 		const userId = await ctx.db.insert('users', {
 			...args,
 			teams: [],
+			configurationId: null,
+		})
+
+		await ctx.scheduler.runAfter(0, internal.userConfiguration.create, {
+			userId,
 		})
 
 		return userId

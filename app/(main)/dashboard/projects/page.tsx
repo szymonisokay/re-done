@@ -8,21 +8,15 @@ import { PageHeader } from '@/components/page-header/page-header'
 import { ProjectCard } from '@/components/project/project-card/project-card'
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
-import { useQuery } from 'convex/react'
-import { useParams } from 'next/navigation'
+import { useProjects } from '@/hooks/use-projects'
 
 const breadcrumbs: Breadcrumb[] = [
-	{ name: 'Dashboard', href: '/dashboard/:teamId' },
+	{ name: 'Dashboard', href: '/dashboard' },
 	{ name: 'Projects' },
 ]
 
 const ProjectsPage = () => {
-	const teamId = useParams().teamId
-	const projects = useQuery(api.projects.getAll, {
-		teamId: teamId as Id<'teams'>,
-	})
+	const { projects } = useProjects()
 
 	return (
 		<>
