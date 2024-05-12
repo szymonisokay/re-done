@@ -7,7 +7,7 @@ export type TabsType = {
 
 export enum ProjectTabs {
 	overview = 'overview',
-	tasks = 'tasks',
+	boards = 'boards',
 	backlog = 'backlog',
 	members = 'members',
 	settings = 'settings',

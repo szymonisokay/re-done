@@ -1,10 +1,11 @@
 'use client'
 
-import { useSidebarState } from '@/hooks/use-sidebar-state'
-import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useSelectedLayoutSegments } from 'next/navigation'
+
+import { useSidebarState } from '@/hooks/use-sidebar-state'
+import { cn } from '@/lib/utils'
 
 type Props = {
 	icon: LucideIcon
@@ -13,10 +14,10 @@ type Props = {
 }
 
 export const NavigationItem = ({ icon: Icon, text, path }: Props) => {
-	const pathname = usePathname()
+	const segments = useSelectedLayoutSegments()
 	const { isCollapsed } = useSidebarState()
 
-	const isActive = pathname === path
+	const isActive = path.includes(segments[1])
 
 	return (
 		<Link

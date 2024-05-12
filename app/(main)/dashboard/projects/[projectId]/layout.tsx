@@ -1,7 +1,8 @@
 'use client'
 
-import { useParams, usePathname } from 'next/navigation'
-import { ReactNode } from 'react'
+import { redirect, useParams, usePathname } from 'next/navigation'
+import { ReactNode, useEffect } from 'react'
+import { toast } from 'sonner'
 
 import { Breadcrumb } from '@/components/breadcrumbs/types'
 import { PageHeader } from '@/components/page-header/page-header'
@@ -18,7 +19,18 @@ const ProjectLayout = ({ children }: Props) => {
 	const pathname = usePathname()
 	const { replaceUrl } = useCreateUrl()
 	const projectId = useParams().projectId
-	const { project } = useProject(projectId as string)
+	const { project, error } = useProject(projectId as string)
+
+	useEffect(() => {
+		if (!!error) {
+			toast.error(error.code ?? '', {
+				description:
+					'Project not found or you do not have access to it',
+			})
+
+			redirect('/dashboard/projects')
+		}
+	}, [error])
 
 	const breadcrumbs: Breadcrumb[] = [
 		{ name: 'Dashboard', href: '/dashboard' },
@@ -33,10 +45,10 @@ const ProjectLayout = ({ children }: Props) => {
 	}))
 
 	const currentPage = projectTabs.includes(
-		pathname.split('/').at(-1) as ProjectTabs.tasks
+		pathname.split('/').at(-1) as ProjectTabs.boards
 	)
 		? pathname.split('/').at(-1)
-		: ProjectTabs.tasks
+		: ProjectTabs.boards
 
 	return (
 		<>

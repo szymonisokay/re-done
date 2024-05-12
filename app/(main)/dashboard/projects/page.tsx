@@ -29,11 +29,13 @@ const ProjectsPage = () => {
 				</Link>
 			</PageHeader>
 
-			{projects === undefined ? (
-				<Spinner className='pt-5' />
+			{projects === undefined && <Spinner className='pt-5' />}
+
+			{projects !== undefined && projects.length === 0 ? (
+				<p>No projects</p>
 			) : (
 				<section className='grid grid-cols-1 md:grid-cols-2 gap-4 p-5'>
-					{projects.map((project) => (
+					{projects?.map((project) => (
 						<ProjectCard key={project._id} project={project} />
 					))}
 				</section>

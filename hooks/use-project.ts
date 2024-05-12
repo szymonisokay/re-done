@@ -1,13 +1,17 @@
 'use client'
 
 import { api } from '@/convex/_generated/api'
-import { useQuery } from 'convex/react'
+import { useQueryWrapper } from '@/hooks/use-query-wrapper'
 
 export const useProject = (projectId: string) => {
-	const project = useQuery(
+	const { data, error, isLoading } = useQueryWrapper(
 		api.projects.get,
 		!!projectId ? { projectSymbol: projectId } : 'skip'
 	)
 
-	return { project }
+	return {
+		project: data,
+		error,
+		isLoading,
+	}
 }

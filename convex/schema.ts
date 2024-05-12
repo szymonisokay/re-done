@@ -48,4 +48,27 @@ export default defineSchema({
 		teamId: v.id('teams'),
 		members: v.array(v.id('users')),
 	}),
+	sprints: defineTable({
+		incrementalId: v.number(), // id 0 - for backlog
+		projectId: v.id('projects'),
+		startDate: v.optional(v.string()),
+		endDate: v.optional(v.string()),
+		sprintGoal: v.optional(v.string()),
+		tasks: v.array(v.id('tasks')),
+	}).index('by_projectId', ['projectId']),
+	tasks: defineTable({
+		name: v.string(),
+		description: v.string(),
+		status: v.union(
+			v.literal('Unassigned'),
+			v.literal('In Progress'),
+			v.literal('Code Review'),
+			v.literal('Testing'),
+			v.literal('Done')
+		),
+		estimatedTime: v.string(),
+		sprintId: v.id('sprints'),
+		creatorId: v.id('users'),
+		assigneeId: v.union(v.id('users'), v.null()),
+	}),
 })

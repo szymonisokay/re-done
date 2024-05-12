@@ -1,6 +1,7 @@
 import { v } from 'convex/values'
 
-import { CustomConvexError } from '@/utils/error'
+import { CustomConvexError, normalizeError } from '@/utils/error'
+import { internal } from './_generated/api'
 import { mutation, query } from './_generated/server'
 
 export const get = query({
@@ -35,10 +36,7 @@ export const get = query({
 			.first()
 
 		if (!project) {
-			throw new CustomConvexError({
-				code: 'projectNotFound',
-				message: 'Project not found',
-			})
+			return normalizeError('Project not found')
 		}
 
 		// check if user is a member of the project
@@ -53,7 +51,7 @@ export const get = query({
 			})
 		}
 
-		return project
+		return { data: project }
 	},
 })
 
@@ -77,6 +75,10 @@ export const getAll = query({
 				code: 'teamNotFound',
 				message: 'Team not found',
 			})
+		}
+
+		if (team.projects.length === 0) {
+			return []
 		}
 
 		//  map through all projects and populate each project with members
@@ -164,6 +166,11 @@ export const create = mutation({
 		// populate project array in team with project id
 		await ctx.db.patch(team._id, {
 			projects: [...team.projects, projectId],
+		})
+
+		// create backlog
+		await ctx.scheduler.runAfter(0, internal.sprints.createBacklog, {
+			projectId,
 		})
 
 		return projectId

@@ -16,6 +16,7 @@ import type {
 } from "convex/server";
 import type * as projects from "../projects.js";
 import type * as resend from "../resend.js";
+import type * as sprints from "../sprints.js";
 import type * as teams from "../teams.js";
 import type * as templates_invite from "../templates/invite.js";
 import type * as userConfiguration from "../userConfiguration.js";
@@ -32,6 +33,7 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   projects: typeof projects;
   resend: typeof resend;
+  sprints: typeof sprints;
   teams: typeof teams;
   "templates/invite": typeof templates_invite;
   userConfiguration: typeof userConfiguration;
