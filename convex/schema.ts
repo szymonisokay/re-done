@@ -54,6 +54,7 @@ export default defineSchema({
 		startDate: v.optional(v.string()),
 		endDate: v.optional(v.string()),
 		sprintGoal: v.optional(v.string()),
+		isActive: v.optional(v.boolean()),
 		tasks: v.array(v.id('tasks')),
 	}).index('by_projectId', ['projectId']),
 	tasks: defineTable({
@@ -61,6 +62,7 @@ export default defineSchema({
 		description: v.string(),
 		status: v.union(
 			v.literal('Unassigned'),
+			v.literal('To Do'),
 			v.literal('In Progress'),
 			v.literal('Code Review'),
 			v.literal('Testing'),

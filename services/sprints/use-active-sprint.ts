@@ -3,16 +3,14 @@
 import { api } from '@/convex/_generated/api'
 import { useQueryWithStatus } from '@/hooks/use-query-wrapper'
 
-export const useProject = (projectId: string) => {
-	const fetcher = !!projectId ? { projectSymbol: projectId } : 'skip'
-
+export const useActiveSprint = (projectSymbol: string) => {
 	const { data, error, isPending } = useQueryWithStatus(
-		api.projects.get,
-		fetcher
+		api.sprints.getActiveSprintByProjectSymbol,
+		!!projectSymbol ? { projectSymbol } : 'skip'
 	)
 
 	return {
-		project: data,
+		activeSprint: data,
 		error,
 		isLoading: isPending,
 	}

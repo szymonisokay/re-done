@@ -91,7 +91,7 @@ export const Sidebar = () => {
 					/>
 				) : (
 					<Logo.Collapsed
-						className='w-[35px] cursor-pointer'
+						className='w-[30px] cursor-pointer'
 						onClick={() => router.push(BASE_PATH)}
 					/>
 				)}

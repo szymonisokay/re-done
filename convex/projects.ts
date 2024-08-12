@@ -1,6 +1,6 @@
 import { v } from 'convex/values'
 
-import { CustomConvexError, normalizeError } from '@/utils/error'
+import { CustomConvexError } from '@/utils/error'
 import { internal } from './_generated/api'
 import { mutation, query } from './_generated/server'
 
@@ -36,7 +36,10 @@ export const get = query({
 			.first()
 
 		if (!project) {
-			return normalizeError('Project not found')
+			throw new CustomConvexError({
+				code: 'projectNotFound',
+				message: 'Project not found',
+			})
 		}
 
 		// check if user is a member of the project
@@ -51,7 +54,7 @@ export const get = query({
 			})
 		}
 
-		return { data: project }
+		return project
 	},
 })
 

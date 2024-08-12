@@ -23,7 +23,7 @@ const ProjectLayout = ({ children }: Props) => {
 
 	useEffect(() => {
 		if (!!error) {
-			toast.error(error.code ?? '', {
+			toast.error(error.data.code ?? '', {
 				description:
 					'Project not found or you do not have access to it',
 			})

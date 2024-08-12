@@ -14,7 +14,7 @@ type Props = {
 
 export const Tabs = ({ tabs, value }: Props) => {
 	return (
-		<TabsPrimitive defaultValue={value}>
+		<TabsPrimitive defaultValue={value} value={value}>
 			<TabsList>
 				{tabs.map(({ label, value, href, badge }) => (
 					<TabsTrigger

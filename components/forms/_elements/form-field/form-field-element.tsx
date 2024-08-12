@@ -25,7 +25,7 @@ type Props<
 > = {
 	control: Control<TFieldValues>
 	name: TName
-	label: string | ReactElement
+	label?: string | ReactElement
 	description?: string
 	containerClassName?: string
 	render: ({
@@ -56,7 +56,7 @@ export const FormFieldElement = <
 			name={name}
 			render={(state) => (
 				<FormItem className={cn('space-y-2', containerClassName)}>
-					<FormLabel>{label}</FormLabel>
+					{label && <FormLabel>{label}</FormLabel>}
 					<FormControl>{render(state)}</FormControl>
 					{description && (
 						<FormDescription className='flex text-secondary !mt-2'>

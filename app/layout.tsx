@@ -6,12 +6,13 @@ import ConvexClientProvider from '@/providers/convex-provider'
 
 import { Toaster } from '@/components/ui/sonner'
 import { ClientProvider } from '@/providers/client-provider'
+import { ModalsProvider } from '@/providers/modals-provider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-	title: 'ReDone',
+	title: 'milestone.',
 	description: 'Real-time Project Management System',
 }
 
@@ -26,6 +27,7 @@ export default function RootLayout({
 				<ClientProvider>
 					<ConvexClientProvider>
 						<Toaster />
+						<ModalsProvider />
 						{children}
 					</ConvexClientProvider>
 				</ClientProvider>
