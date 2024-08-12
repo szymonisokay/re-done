@@ -8,7 +8,7 @@ import { Breadcrumb } from '@/components/breadcrumbs/types'
 import { PageHeader } from '@/components/page-header/page-header'
 import { Tabs } from '@/components/tabs/tabs'
 import { useCreateUrl } from '@/hooks/use-create-url'
-import { useProject } from '@/hooks/use-project'
+import { useProject } from '@/services/projects/use-project'
 import { ProjectTabs, TabsType, projectTabs } from '@/types/tabs'
 
 type Props = {
@@ -23,7 +23,7 @@ const ProjectLayout = ({ children }: Props) => {
 
 	useEffect(() => {
 		if (!!error) {
-			toast.error(error.data.code ?? '', {
+			toast.error(error.data.code, {
 				description:
 					'Project not found or you do not have access to it',
 			})

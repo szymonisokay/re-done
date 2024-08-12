@@ -1,11 +1,12 @@
-import { useQuery } from 'convex/react'
-
 import { api } from '@/convex/_generated/api'
+import { useQueryWithStatus } from '@/hooks/use-query-wrapper'
 
 export const useGetUser = () => {
-	const user = useQuery(api.users.get)
+	const { data, error, isPending } = useQueryWithStatus(api.users.get)
 
 	return {
-		user,
+		user: data,
+		error,
+		isLoading: isPending,
 	}
 }

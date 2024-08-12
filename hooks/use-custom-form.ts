@@ -8,7 +8,7 @@ export const useCustomForm = <T extends FieldValues>(
 ) => {
 	const form = useForm<T>({
 		resolver: zodResolver(formSchema),
-		mode: 'onBlur',
+		mode: options?.mode ?? 'onBlur',
 		...options,
 	})
 

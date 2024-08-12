@@ -5,7 +5,7 @@ import { UserButton } from '@clerk/clerk-react'
 import { Breadcrumb } from '@/components/breadcrumbs/types'
 import { PageHeader } from '@/components/page-header/page-header'
 import { Spinner } from '@/components/spinner'
-import { useTeam } from '@/hooks/use-team'
+import { useTeam } from '@/services/teams/use-team'
 import { redirect } from 'next/navigation'
 
 const breadcrumbs: Breadcrumb[] = [{ name: 'Dashboard' }]

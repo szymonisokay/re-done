@@ -8,7 +8,7 @@ import { PageHeader } from '@/components/page-header/page-header'
 import { ProjectCard } from '@/components/project/project-card/project-card'
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
-import { useProjects } from '@/hooks/use-projects'
+import { useProjects } from '@/services/projects/use-projects'
 
 const breadcrumbs: Breadcrumb[] = [
 	{ name: 'Dashboard', href: '/dashboard' },

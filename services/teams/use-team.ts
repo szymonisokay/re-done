@@ -1,23 +1,24 @@
 'use client'
 
-import { useQuery } from 'convex/react'
-
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
-import { useConfiguration } from '@/hooks/use-configuration'
+import { useQueryWithStatus } from '@/hooks/use-query-wrapper'
+import { useConfiguration } from '@/services/configuration/use-configuration'
 
 export const useTeam = () => {
 	const { configuration } = useConfiguration()
-	const team = useQuery(
+	const { data, error, isPending } = useQueryWithStatus(
 		api.teams.get,
 		!!configuration
 			? {
 					teamId: configuration.currentTeamId as Id<'teams'>,
-			  }
+				}
 			: 'skip'
 	)
 
 	return {
-		team,
+		team: data,
+		error,
+		isLoading: isPending,
 	}
 }
