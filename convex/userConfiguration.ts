@@ -8,10 +8,7 @@ export const get = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		const user = await ctx.db
@@ -20,26 +17,17 @@ export const get = query({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'userNotFound',
-				message: 'User not found',
-			})
+			throw new CustomConvexError('User not found')
 		}
 
 		const configuration = await ctx.db.get(configurationId)
 
 		if (!configuration) {
-			throw new CustomConvexError({
-				code: 'configurationNotFound',
-				message: 'Configuration not found',
-			})
+			throw new CustomConvexError('Configuration not found')
 		}
 
 		if (configuration.userId !== user._id) {
-			throw new CustomConvexError({
-				code: 'unauthorizedAccess',
-				message: 'Unauthorized access',
-			})
+			throw new CustomConvexError('Unauthorized access')
 		}
 
 		return configuration

@@ -1,4 +1,4 @@
-import { normalizeError } from '@/utils/error'
+import { CustomConvexError } from '@/utils/error'
 import { v } from 'convex/values'
 import { internalMutation, query } from './_generated/server'
 
@@ -19,7 +19,7 @@ export const getActiveSprintByProjectSymbol = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			return normalizeError('Unauthenticated')
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		// check if user exists
@@ -29,7 +29,7 @@ export const getActiveSprintByProjectSymbol = query({
 			.first()
 
 		if (!user) {
-			return normalizeError('User not found')
+			throw new CustomConvexError('User not found')
 		}
 
 		// check if project exists
@@ -39,12 +39,12 @@ export const getActiveSprintByProjectSymbol = query({
 			.first()
 
 		if (!project) {
-			return normalizeError('Project not found')
+			throw new CustomConvexError('Project not found')
 		}
 
 		// check if user is part of the project
 		if (!project.members.some((memberId) => memberId === user._id)) {
-			return normalizeError('User is not part of the project')
+			throw new CustomConvexError('User is not part of the project')
 		}
 
 		const sprint = await ctx.db
@@ -54,8 +54,6 @@ export const getActiveSprintByProjectSymbol = query({
 			.filter((q) => q.gt(q.field('incrementalId'), 0))
 			.first()
 
-		return {
-			data: sprint,
-		}
+		return sprint
 	},
 })

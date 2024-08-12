@@ -11,10 +11,7 @@ export const get = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		if (!teamId) {
@@ -24,10 +21,7 @@ export const get = query({
 		const team = await ctx.db.get(teamId)
 
 		if (!team) {
-			throw new CustomConvexError({
-				code: 'teamNotFound',
-				message: 'Team not found',
-			})
+			throw new CustomConvexError('Team not found')
 		}
 
 		return team
@@ -39,10 +33,7 @@ export const getLatestTeam = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		const user = await ctx.db
@@ -51,10 +42,7 @@ export const getLatestTeam = query({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'userNotFound',
-				message: 'User not found',
-			})
+			throw new CustomConvexError('User not found')
 		}
 
 		return user.teams[0]
@@ -67,10 +55,7 @@ export const create = mutation({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		const user = await ctx.db
@@ -79,10 +64,7 @@ export const create = mutation({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'userNotFound',
-				message: 'User not found',
-			})
+			throw new CustomConvexError('User not found')
 		}
 
 		const teamId = await ctx.db.insert('teams', {
@@ -112,27 +94,18 @@ export const invite = mutation({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		if (!email) {
-			throw new CustomConvexError({
-				code: 'invalidEmail',
-				message: 'Please enter a valid email address',
-			})
+			throw new CustomConvexError('Please enter a valid email address')
 		}
 
 		const teamId = ctx.db.normalizeId('teams', id)
 		const team = await ctx.db.get(teamId as Id<'teams'>)
 
 		if (!team) {
-			throw new CustomConvexError({
-				code: 'teamNotFound',
-				message: 'Team not found',
-			})
+			throw new CustomConvexError('Team not found')
 		}
 
 		const user = await ctx.db
@@ -141,10 +114,7 @@ export const invite = mutation({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'userNotFound',
-				message: 'User not found',
-			})
+			throw new CustomConvexError('User not found')
 		}
 
 		await ctx.scheduler.runAfter(0, internal.resend.sendInviteEmail, {
@@ -167,10 +137,7 @@ export const acceptInvite = mutation({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		const user = await ctx.db
@@ -179,10 +146,7 @@ export const acceptInvite = mutation({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'userNotFound',
-				message: 'User not found',
-			})
+			throw new CustomConvexError('User not found')
 		}
 
 		const team = await ctx.db
@@ -191,17 +155,11 @@ export const acceptInvite = mutation({
 			.first()
 
 		if (!team) {
-			throw new CustomConvexError({
-				code: 'invalidCode',
-				message: 'The invite code is invalid',
-			})
+			throw new CustomConvexError('The invite code is invalid')
 		}
 
 		if (team.members.some((m) => m.userId === user._id)) {
-			throw new CustomConvexError({
-				code: 'alreadyAMember',
-				message: 'You are already a member of this team',
-			})
+			throw new CustomConvexError('You are already a member of this team')
 		}
 
 		await ctx.db.patch(user._id, { teams: [...user.teams, team._id] })

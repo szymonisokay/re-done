@@ -4,23 +4,13 @@ import { toCamelCase } from '@/lib/utils'
 import { CustomErrorProps } from '../types/common'
 
 export class CustomConvexError extends ConvexError<CustomErrorProps> {
-	constructor({ code, message, longMessage }: CustomErrorProps) {
-		super({
-			code,
+	constructor(message: string, longMessage?: string) {
+		const data = {
+			code: toCamelCase(message),
 			message,
 			longMessage,
-		})
-	}
-}
+		} as CustomErrorProps
 
-export const normalizeError = (error: string) => {
-	const errorData = {
-		code: toCamelCase(error),
-		message: error,
-	} as CustomErrorProps
-
-	return {
-		error: errorData,
-		data: null,
+		super(data)
 	}
 }

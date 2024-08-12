@@ -10,10 +10,7 @@ export const get = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		// get user
@@ -23,10 +20,7 @@ export const get = query({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'userNotFound',
-				message: 'User not found',
-			})
+			throw new CustomConvexError('User not found')
 		}
 
 		// check if project exists
@@ -36,10 +30,7 @@ export const get = query({
 			.first()
 
 		if (!project) {
-			throw new CustomConvexError({
-				code: 'projectNotFound',
-				message: 'Project not found',
-			})
+			throw new CustomConvexError('Project not found')
 		}
 
 		// check if user is a member of the project
@@ -48,10 +39,7 @@ export const get = query({
 		)
 
 		if (!isMember) {
-			throw new CustomConvexError({
-				code: 'unauthorizedAccess',
-				message: 'Unauthorized access',
-			})
+			throw new CustomConvexError('Unauthorized access')
 		}
 
 		return project
@@ -64,20 +52,14 @@ export const getAll = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		// check if team exists
 		const team = await ctx.db.get(teamId)
 
 		if (!team) {
-			throw new CustomConvexError({
-				code: 'teamNotFound',
-				message: 'Team not found',
-			})
+			throw new CustomConvexError('Team not found')
 		}
 
 		if (team.projects.length === 0) {
@@ -118,10 +100,7 @@ export const create = mutation({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		// check if user exists
@@ -131,20 +110,14 @@ export const create = mutation({
 			.first()
 
 		if (!user) {
-			throw new CustomConvexError({
-				code: 'unauthorizedAccess',
-				message: 'Unauthorized access',
-			})
+			throw new CustomConvexError('Unauthorized access')
 		}
 
 		// check if team exists
 		const team = await ctx.db.get(args.teamId)
 
 		if (!team) {
-			throw new CustomConvexError({
-				code: 'teamNotFound',
-				message: 'Team not found',
-			})
+			throw new CustomConvexError('Team not found')
 		}
 
 		// check if user has permission to create a project
@@ -153,10 +126,7 @@ export const create = mutation({
 		)
 
 		if (!isUserAnAdmin) {
-			throw new CustomConvexError({
-				code: 'unauthorizedAccess',
-				message: 'Unauthorized access',
-			})
+			throw new CustomConvexError('Unauthorized access')
 		}
 
 		// create project

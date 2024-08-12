@@ -9,10 +9,7 @@ export const get = query({
 		const auth = await ctx.auth.getUserIdentity()
 
 		if (auth === null) {
-			throw new CustomConvexError({
-				code: 'unathenticated',
-				message: 'Unauthenticated',
-			})
+			throw new CustomConvexError('Unauthenticated')
 		}
 
 		const user = await ctx.db
