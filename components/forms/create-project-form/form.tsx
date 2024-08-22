@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { api } from '@/convex/_generated/api'
 import { useCustomForm } from '@/hooks/use-custom-form'
-import { useTeam } from '@/hooks/use-team'
+import { useTeam } from '@/services/teams/use-team'
 
 type Props = ComponentProps<'form'>
 

@@ -1,8 +1,28 @@
-export const taskStatus = [
-	'Unassigned',
-	'To do',
-	'In progress',
-	'Code Review',
-	'Testing',
-	'Done',
+import { v } from 'convex/values'
+
+export enum TASK_STATUSES_ENUM {
+	UNASSIGNED = 'Unassigned',
+	TO_DO = 'To do',
+	IN_PROGRESS = 'In progress',
+	CODE_REVIEW = 'Code review',
+	TESTING = 'Testing',
+	DONE = 'Done',
+}
+
+export const TASK_STATUSES = [
+	TASK_STATUSES_ENUM.UNASSIGNED,
+	TASK_STATUSES_ENUM.TO_DO,
+	TASK_STATUSES_ENUM.IN_PROGRESS,
+	TASK_STATUSES_ENUM.CODE_REVIEW,
+	TASK_STATUSES_ENUM.TESTING,
+	TASK_STATUSES_ENUM.DONE,
 ] as const
+
+export const TASK_STATUSES_CONVEX = v.union(
+	v.literal(TASK_STATUSES_ENUM.UNASSIGNED),
+	v.literal(TASK_STATUSES_ENUM.TO_DO),
+	v.literal(TASK_STATUSES_ENUM.IN_PROGRESS),
+	v.literal(TASK_STATUSES_ENUM.CODE_REVIEW),
+	v.literal(TASK_STATUSES_ENUM.TESTING),
+	v.literal(TASK_STATUSES_ENUM.DONE)
+)

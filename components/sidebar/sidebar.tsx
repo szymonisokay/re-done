@@ -9,7 +9,6 @@ import {
 	UsersIcon,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useCallback } from 'react'
 
 import { Logo } from '@/components/logo/logo'
 import { NavigationGroup } from '@/components/sidebar/navigation-group'
@@ -72,9 +71,9 @@ export const Sidebar = () => {
 		},
 	]
 
-	const onSidebarCollapse = useCallback(() => {
+	const onSidebarCollapse = () => {
 		toggleCollapsed(isCollapsed)
-	}, [isCollapsed])
+	}
 
 	return (
 		<aside

@@ -13,6 +13,8 @@ export const createBacklog = internalMutation({
 	},
 })
 
+// export const getSprintsByPro
+
 export const getActiveSprintByProjectSymbol = query({
 	args: { projectSymbol: v.string() },
 	handler: async (ctx, { projectSymbol }) => {
