@@ -22,7 +22,7 @@
 		"@react-email/components": "^0.0.16",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.0",
-		"convex": "^1.10.0",
+		"convex": "^1.17.0",
 		"convex-helpers": "^0.1.52",
 		"date-fns": "^3.6.0",
 		"input-otp": "^1.2.3",

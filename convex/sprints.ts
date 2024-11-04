@@ -6,14 +6,12 @@ export const createBacklog = internalMutation({
 	args: { projectId: v.id('projects') },
 	handler: async (ctx, { projectId }) => {
 		await ctx.db.insert('sprints', {
-			incrementalId: 0,
+			name: 'Backlog',
 			projectId,
 			tasks: [],
 		})
 	},
 })
-
-// export const getSprintsByPro
 
 export const getActiveSprintByProjectSymbol = query({
 	args: { projectSymbol: v.string() },
@@ -53,7 +51,7 @@ export const getActiveSprintByProjectSymbol = query({
 			.query('sprints')
 			.filter((q) => q.eq(q.field('projectId'), project._id))
 			.filter((q) => q.eq(q.field('isActive'), true))
-			.filter((q) => q.gt(q.field('incrementalId'), 0))
+			.filter((q) => q.neq(q.field('name'), 'Backlog'))
 			.first()
 
 		return sprint

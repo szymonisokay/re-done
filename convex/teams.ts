@@ -3,6 +3,7 @@ import { v } from 'convex/values'
 import { internal } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { mutation, query } from '@/convex/_generated/server'
+import { TEAM_ROLES_ENUM } from '@/types/teams'
 import { CustomConvexError } from '@/utils/error'
 
 export const get = query({
@@ -72,7 +73,7 @@ export const create = mutation({
 			ownerId: user._id,
 			members: [
 				{
-					role: 'Admin',
+					role: TEAM_ROLES_ENUM.ADMIN,
 					userId: user._id,
 				},
 			],
@@ -165,7 +166,10 @@ export const acceptInvite = mutation({
 		await ctx.db.patch(user._id, { teams: [...user.teams, team._id] })
 
 		await ctx.db.patch(team._id, {
-			members: [...team.members, { userId: user._id, role: 'Member' }],
+			members: [
+				...team.members,
+				{ userId: user._id, role: TEAM_ROLES_ENUM.MEMBER },
+			],
 		})
 
 		return true

@@ -1,3 +1,4 @@
+import { THEME_ENUM } from '@/types/configuration'
 import { CustomConvexError } from '@/utils/error'
 import { v } from 'convex/values'
 import { internalMutation, query } from './_generated/server'
@@ -40,7 +41,7 @@ export const create = internalMutation({
 		const configurationId = await ctx.db.insert('userConfiguration', {
 			userId,
 			currentTeamId: null,
-			theme: 'system',
+			theme: THEME_ENUM.SYSTEM,
 			language: null,
 		})
 
